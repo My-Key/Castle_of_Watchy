@@ -7,7 +7,7 @@ const int posBatteryFillX = posBatteryX + 2;
 const int posBatteryFillY = posBatteryY + 14;
 
 const int posTimeCenterX = 100;
-const int posTimeY = 110;
+const int posTimeY = 105;
 
 const int posAMPMTimeX = 160;
 const int posAMPMTimeY = 140;
@@ -27,7 +27,7 @@ const int posStepsOffsetY = 22;
 
 const float VOLTAGE_MIN = 3.2;
 const float VOLTAGE_MAX = 4.1;
-const float VOLTAGE_RANGE = 0.9;
+const float VOLTAGE_RANGE = VOLTAGE_MAX - VOLTAGE_MIN;
 
 BetonWatchy::BetonWatchy()
 {
@@ -171,15 +171,15 @@ void BetonWatchy::drawBattery()
   float VBAT = getBatteryVoltage();
 
   // 12 battery states
-  int batState = int(((VBAT - VOLTAGE_MIN) / VOLTAGE_RANGE) * 186);
-  if (batState > 186)
-    batState = 186;
+  int batState = int(((VBAT - VOLTAGE_MIN) / VOLTAGE_RANGE) * 191);
+  if (batState > 191)
+    batState = 191;
   if (batState < 0)
     batState = 0;
 
-  display.fillRect(6, 6, batState, 32, GxEPD_WHITE);
+  display.fillRect(5, 8, batState, 25, GxEPD_WHITE);
 
-  display.drawBitmap(6, 6, epd_bitmap_Battery_Mask, 186, 32, GxEPD_BLACK);
+  display.drawBitmap(5, 8, epd_bitmap_Battery_Mask_2, 191, 25, GxEPD_BLACK);
   
-  display.drawBitmap(0, 0, epd_bitmap_Battery_BG, 200, 72, GxEPD_WHITE);
+  display.drawBitmap(0, 2, epd_bitmap_Battery_BG_2, 200, 45, GxEPD_WHITE);
 }
