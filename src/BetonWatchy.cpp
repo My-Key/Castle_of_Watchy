@@ -1,32 +1,21 @@
 #include "BetonWatchy.h"
 
-const int posBatteryX = 15;
-const int posBatteryY = 15;
+const int posBatteryX = 0;
+const int posBatteryY = 2;
 
-const int posBatteryFillX = posBatteryX + 2;
-const int posBatteryFillY = posBatteryY + 14;
+const int posBatteryFillX = posBatteryX + 5;
+const int posBatteryFillY = posBatteryY + 6;
 
 const int posTimeCenterX = 100;
 const int posTimeY = 105;
 
-const int posAMPMTimeX = 160;
-const int posAMPMTimeY = 140;
-
-const int posDateX = 25;
+const int posDateXCenter = 100;
 const int posDate1Y = 150;
 
 const int posDate2Y = 175;
 
-const int posStepsIconX = 137;
-const int posStepsIconY = 15;
-
-const int posStepsBGX = 51;
-const int posStepsBGY = 25;
-
-const int posStepsOffsetY = 22;
-
-const float VOLTAGE_MIN = 3.2;
-const float VOLTAGE_MAX = 4.1;
+const float VOLTAGE_MIN = 3.4;
+const float VOLTAGE_MAX = 4.2;
 const float VOLTAGE_RANGE = VOLTAGE_MAX - VOLTAGE_MIN;
 
 BetonWatchy::BetonWatchy()
@@ -37,12 +26,10 @@ BetonWatchy::BetonWatchy()
 void BetonWatchy::drawWatchFace()
 {
   display.fillScreen(GxEPD_BLACK);
-  //display.drawBitmap(0, 0, epd_bitmap_BG, 200, 200, GxEPD_BLACK);
   display.setTextColor(GxEPD_WHITE);
 
   drawTime();
   drawDate();
-  //drawSteps();
   drawBattery();
 }
 
@@ -75,17 +62,17 @@ void BetonWatchy::drawTime()
 
   display.getTextBounds(timeString, 0, 0, &x1, &y1, &w, &h);
 
-  display.setCursor(100 - w / 2, posTimeY);
+  display.setCursor(posTimeCenterX - w / 2, posTimeY);
   display.print(timeString);
 
-  display.drawFastHLine(100 - w / 2 - 15, posTimeY, w + 30, GxEPD_WHITE);
-  display.drawFastHLine(100 - w / 2 - 5, posTimeY + 1, w + 10, GxEPD_WHITE);
+  display.drawFastHLine(posTimeCenterX - w / 2 - 15, posTimeY, w + 30, GxEPD_WHITE);
+  display.drawFastHLine(posTimeCenterX - w / 2 - 5, posTimeY + 1, w + 10, GxEPD_WHITE);
 
   if (HOUR_12_24 != 12)
     return;
 
   display.setFont(&BLKCHCRY12pt7b);
-  display.setCursor(100 + w / 2, posTimeY);
+  display.setCursor(posTimeCenterX + w / 2, posTimeY);
   display.print(am ? "AM" : "PM");
 }
 
@@ -124,7 +111,7 @@ void BetonWatchy::drawDate()
   
   display.getTextBounds(dayOfWeek, 0, 0, &x1, &y1, &w, &h);
 
-  display.setCursor(100 - w / 2, posDate1Y);
+  display.setCursor(posDateXCenter - w / 2, posDate1Y);
   display.println(dayOfWeek);
 
   String day = String(currentTime.Day) + String(Ordinal(currentTime.Day));
@@ -134,36 +121,15 @@ void BetonWatchy::drawDate()
 
   int width = w;
 
-  display.setCursor(100 - w / 2, posDate2Y);
+  display.setCursor(posDateXCenter - w / 2, posDate2Y);
   display.print(date);
 
-  display.drawFastHLine(100 - w / 2 - 10, posDate2Y + 1, w + 20, GxEPD_WHITE);
+  display.drawFastHLine(posDateXCenter - w / 2 - 10, posDate2Y + 1, w + 20, GxEPD_WHITE);
   
   display.getTextBounds(day, 0, 0, &x1, &y1, &w, &h);
   
-  display.setCursor(100 - width / 2 + w + 4, posDate2Y + 10);
+  display.setCursor(posDateXCenter - width / 2 + w + 4, posDate2Y + 10);
   display.print("of");
-}
-
-void BetonWatchy::drawSteps(){
-    // reset step counter at midnight
-    if (currentTime.Hour == 0 && currentTime.Minute == 0){
-      sensor.resetStepCounter();
-    }
-    
-    uint32_t stepCount = sensor.getCounter();
-
-    //display.drawBitmap(posStepsIconX, posStepsIconY, epd_bitmap_Shell, 48, 50, GxEPD_BLACK);
-    
-    //display.drawBitmap(posStepsBGX, posStepsBGY, epd_bitmap_Steps_BG, 85, 30, GxEPD_BLACK);
-
-    int16_t  x1, y1;
-    uint16_t w, h;
-    display.getTextBounds(String(stepCount), 0, 0, &x1, &y1, &w, &h);
-
-    display.setFont(&BLKCHCRY12pt7b);
-    display.setCursor(posStepsIconX - 10 - w, posStepsBGY + posStepsOffsetY);
-    display.println(stepCount);
 }
 
 void BetonWatchy::drawBattery()
@@ -177,9 +143,9 @@ void BetonWatchy::drawBattery()
   if (batState < 0)
     batState = 0;
 
-  display.fillRect(5, 8, batState, 25, GxEPD_WHITE);
+  display.fillRect(posBatteryFillX, posBatteryFillY, batState, 25, GxEPD_WHITE);
 
-  display.drawBitmap(5, 8, epd_bitmap_Battery_Mask_2, 191, 25, GxEPD_BLACK);
+  display.drawBitmap(posBatteryFillX, posBatteryFillY, epd_bitmap_Battery_Mask_2, 191, 25, GxEPD_BLACK);
   
-  display.drawBitmap(0, 2, epd_bitmap_Battery_BG_2, 200, 45, GxEPD_WHITE);
+  display.drawBitmap(posBatteryX, posBatteryY, epd_bitmap_Battery_BG_2, 200, 45, GxEPD_WHITE);
 }
