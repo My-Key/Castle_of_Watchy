@@ -8,8 +8,8 @@
 
 class BetonWatchy : public Watchy
 {
+  using Watchy::Watchy;
 public:
-  BetonWatchy();
   void drawWatchFace();
   void drawTime();
   void drawDate();

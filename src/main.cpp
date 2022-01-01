@@ -1,7 +1,8 @@
 #include <Arduino.h>
 #include <BetonWatchy.h>
+#include "settings.h"
 
-BetonWatchy watchy;
+BetonWatchy watchy(settings);
 
 void setup() {
   watchy.init();
